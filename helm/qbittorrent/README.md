@@ -18,16 +18,17 @@ Please note that only Private Internet Access (PIA) VPN provider is implemented 
 ## Installing the Chart
 
 To install the chart, use the following:
+```console
+$ helm repo add trankchung https://raw.githubusercontent.com/trankchung/charts/master/
+$ helm repo update
 
-### Without VPN Support
-```console
-$ helm install --set vpn.enabled=false --name qbittorrent https://raw.githubusercontent.com/trankchung/qbittorrent/master/helm/qbittorrent-1.0.0.tgz
-```
-### With VPN Support
-```console
+# Without VPN support
+$ helm install --set vpn.enabled=false --name qbittorrent trankchung/qbittorrent-1.0.1.tgz
+
+### With VPN support
 $ VPN_USERNAME=myVpnUsername
 $ VPN_PASSWORD=myVpnPassword
-$ helm install --set vpn.enabled=true,vpn.username=$VPN_USERNAME,vpn.password=$VPN_PASSWORD --name qbittorrent https://raw.githubusercontent.com/trankchung/qbittorrent/master/helm/qbittorrent-1.0.0.tgz
+$ helm install --set vpn.enabled=true,vpn.username=$VPN_USERNAME,vpn.password=$VPN_PASSWORD --name qbittorrent trankchung/qbittorrent-1.0.1.tgz
 ```
 
 ## Configuration
