@@ -1,8 +1,6 @@
 # deluge with WebUI and OpenVPN
 
-Docker container which runs the latest headless deluge client with WebUI while connecting to OpenVPN with iptables killswitch to prevent IP leakage when the tunnel goes down. This is an automated build linked with Ubuntu.
-
-![alt text][preview]
+Docker container which runs the latest headless deluge client with WebUI while connecting to OpenVPN with iptables killswitch to prevent IP leakage when the tunnel goes down.
 
 ## Docker Features
 
