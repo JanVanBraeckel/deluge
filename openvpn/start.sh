@@ -166,8 +166,8 @@ if [[ $VPN_ENABLED == "yes" ]]; then
 	# give openvpn some time to connect
 	sleep 5
 	#exec /bin/bash /etc/openvpn/openvpn.init start &
-	exec /bin/bash /etc/qbittorrent/iptables.sh
+	exec /bin/bash /etc/deluge/iptables.sh
 else
-	exec /bin/bash /etc/qbittorrent/start.sh
+	exec /bin/bash /etc/deluge/start.sh
 fi
 

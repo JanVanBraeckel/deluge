@@ -46,9 +46,9 @@ if [[ $iptable_mangle_exit_code == 0 ]]; then
 
 	echo "[info] iptable_mangle support detected, adding fwmark for tables" | ts '%Y-%m-%d %H:%M:%.S'
 
-	# setup route for qbittorrent webui using set-mark to route traffic for port 8080 to eth0
+	# setup route for deluge webui using set-mark to route traffic for port 8112 to eth0
 	if [ -z "${WEBUI_PORT}" ]; then
-		echo "8080    webui" >> /etc/iproute2/rt_tables
+		echo "8112    webui" >> /etc/iproute2/rt_tables
 	else
 		echo "${WEBUI_PORT}     webui" >> /etc/iproute2/rt_tables
 	fi
@@ -98,18 +98,18 @@ iptables -A INPUT -s "${docker_network_cidr}" -d "${docker_network_cidr}" -j ACC
 # accept input to vpn gateway
 iptables -A INPUT -i eth0 -p $VPN_PROTOCOL --sport $VPN_PORT -j ACCEPT
 
-# accept input to qbittorrent webui port
+# accept input to deluge webui port
 if [ -z "${WEBUI_PORT}" ]; then
-	iptables -A INPUT -i eth0 -p tcp --dport 8080 -j ACCEPT
-	iptables -A INPUT -i eth0 -p tcp --sport 8080 -j ACCEPT
+	iptables -A INPUT -i eth0 -p tcp --dport 8112 -j ACCEPT
+	iptables -A INPUT -i eth0 -p tcp --sport 8112 -j ACCEPT
 else
 	iptables -A INPUT -i eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
 	iptables -A INPUT -i eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
 fi
 
-# accept input to qbittorrent daemon port - used for lan access
+# accept input to deluge daemon port - used for lan access
 if [ -z "${INCOMING_PORT}" ]; then
-	iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p tcp --dport 8999 -j ACCEPT
+	iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p tcp --dport 58846 -j ACCEPT
 else
 	iptables -A INPUT -i eth0 -s "${LAN_NETWORK}" -p tcp --dport ${INCOMING_PORT} -j ACCEPT
 fi
@@ -143,10 +143,10 @@ iptables -A OUTPUT -o eth0 -p $VPN_PROTOCOL --dport $VPN_PORT -j ACCEPT
 # if iptable mangle is available (kernel module) then use mark
 if [[ $iptable_mangle_exit_code == 0 ]]; then
 
-	# accept output from qBittorrent webui port - used for external access
+	# accept output from deluge webui port - used for external access
 	if [ -z "${WEBUI_PORT}" ]; then
-		iptables -t mangle -A OUTPUT -p tcp --dport 8080 -j MARK --set-mark 1
-		iptables -t mangle -A OUTPUT -p tcp --sport 8080 -j MARK --set-mark 1
+		iptables -t mangle -A OUTPUT -p tcp --dport 8112 -j MARK --set-mark 1
+		iptables -t mangle -A OUTPUT -p tcp --sport 8112 -j MARK --set-mark 1
 	else
 		iptables -t mangle -A OUTPUT -p tcp --dport ${WEBUI_PORT} -j MARK --set-mark 1
 		iptables -t mangle -A OUTPUT -p tcp --sport ${WEBUI_PORT} -j MARK --set-mark 1
@@ -154,16 +154,16 @@ if [[ $iptable_mangle_exit_code == 0 ]]; then
 	
 fi
 
-# accept output from qBittorrent webui port - used for lan access
+# accept output from deluge webui port - used for lan access
 if [ -z "${WEBUI_PORT}" ]; then
-	iptables -A OUTPUT -o eth0 -p tcp --dport 8080 -j ACCEPT
-	iptables -A OUTPUT -o eth0 -p tcp --sport 8080 -j ACCEPT
+	iptables -A OUTPUT -o eth0 -p tcp --dport 8112 -j ACCEPT
+	iptables -A OUTPUT -o eth0 -p tcp --sport 8112 -j ACCEPT
 else
 	iptables -A OUTPUT -o eth0 -p tcp --dport ${WEBUI_PORT} -j ACCEPT
 	iptables -A OUTPUT -o eth0 -p tcp --sport ${WEBUI_PORT} -j ACCEPT
 fi
 
-# accept output to qBittorrent daemon port - used for lan access
+# accept output to deluge daemon port - used for lan access
 if [ -z "${INCOMING_PORT}" ]; then
 	iptables -A OUTPUT -o eth0 -d "${LAN_NETWORK}" -p tcp --sport 8999 -j ACCEPT
 else
@@ -182,4 +182,4 @@ echo "--------------------"
 iptables -S
 echo "--------------------"
 
-exec /bin/bash /etc/qbittorrent/start.sh
+exec /bin/bash /etc/deluge/start.sh

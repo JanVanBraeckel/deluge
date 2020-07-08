@@ -1,21 +1,18 @@
-[preview]: https://raw.githubusercontent.com/MarkusMcNugen/docker-templates/master/qbittorrentvpn/Screenshot.png "qBittorrent Preview"
+# deluge with WebUI and OpenVPN
 
-# qBittorrent with WebUI and OpenVPN
-
-Docker container which runs the latest headless qBittorrent client with WebUI while connecting to OpenVPN with iptables killswitch to prevent IP leakage when the tunnel goes down. This is an automated build linked with Ubuntu.
+Docker container which runs the latest headless deluge client with WebUI while connecting to OpenVPN with iptables killswitch to prevent IP leakage when the tunnel goes down. This is an automated build linked with Ubuntu.
 
 ![alt text][preview]
 
 ## Docker Features
 
 - Base: Ubuntu 18.04
-- Latest qBittorrent
+- Latest deluge
 - Size: 403MB
 - Selectively enable or disable OpenVPN support
 - IP tables kill switch to prevent IP leaking when VPN connection fails
 - Specify name servers to add to container
-- Configure UID, GID, and UMASK for config files and downloads by qBittorrent
-- WebUI\CSRFProtection set to false by default for Unraid users
+- Configure UID, GID, and UMASK for config files and downloads by deluge
 
 # Run container from Docker registry
 
@@ -24,7 +21,7 @@ To run the container use this command:
 
 ```
 $ docker run --privileged  -d \
-              -v /your/qBittorrent/path/:/config/qBittorrent \
+              -v /your/deluge/path/:/config/deluge \
               -v /your/openvpn/client.conf:/config/client.ovpn \
               -v /your/downloads/path/:/downloads \
               -e "VPN_ENABLED=yes" \
@@ -33,42 +30,42 @@ $ docker run --privileged  -d \
               -p 8080:8080 \
               -p 8999:8999 \
               -p 8999:8999/udp \
-              janvanbraeckel/qbittorrent
+              janvanbraeckel/deluge
 ```
 
 # Variables, Volumes, and Ports
 
 ## Environment Variables
 
-| Variable            | Required | Function                                                                                  | Example                          |
-| ------------------- | -------- | ----------------------------------------------------------------------------------------- | -------------------------------- |
-| `VPN_ENABLED`       | Yes      | Enable VPN? (yes/no) Default:yes                                                          | `VPN_ENABLED=yes`                |
-| `VPN_CONFIG`        | No       | Path to OpenVPN config file. Default: /config/client.ovpn                                 | `VPN_CONFIG=/config/client.conf` |
-| `VPN_USERNAME`      | No       | If username and password provided, configures ovpn file automatically                     | `VPN_USERNAME=ad8f64c02a2de`     |
-| `VPN_PASSWORD`      | No       | If username and password provided, configures ovpn file automatically                     | `VPN_PASSWORD=ac98df79ed7fb`     |
-| `LAN_NETWORK`       | Yes      | Local Network with CIDR notation                                                          | `LAN_NETWORK=192.168.1.0/24`     |
-| `NAME_SERVERS`      | No       | Comma delimited name servers                                                              | `NAME_SERVERS=8.8.8.8,8.8.4.4`   |
-| `PUID`              | No       | UID applied to config files and downloads                                                 | `PUID=99`                        |
-| `PGID`              | No       | GID applied to config files and downloads                                                 | `PGID=100`                       |
-| `UMASK`             | No       | GID applied to config files and downloads                                                 | `UMASK=002`                      |
-| `WEBUI_PORT_ENV`    | No       | Applies WebUI port to qBittorrents config at boot (Must change exposed ports to match)    | `WEBUI_PORT_ENV=8080`            |
-| `INCOMING_PORT_ENV` | No       | Applies Incoming port to qBittorrents config at boot (Must change exposed ports to match) | `INCOMING_PORT_ENV=8999`         |
+| Variable            | Required | Function                                                                            | Example                          |
+| ------------------- | -------- | ----------------------------------------------------------------------------------- | -------------------------------- |
+| `VPN_ENABLED`       | Yes      | Enable VPN? (yes/no) Default:yes                                                    | `VPN_ENABLED=yes`                |
+| `VPN_CONFIG`        | No       | Path to OpenVPN config file. Default: /config/client.ovpn                           | `VPN_CONFIG=/config/client.conf` |
+| `VPN_USERNAME`      | No       | If username and password provided, configures ovpn file automatically               | `VPN_USERNAME=ad8f64c02a2de`     |
+| `VPN_PASSWORD`      | No       | If username and password provided, configures ovpn file automatically               | `VPN_PASSWORD=ac98df79ed7fb`     |
+| `LAN_NETWORK`       | Yes      | Local Network with CIDR notation                                                    | `LAN_NETWORK=192.168.1.0/24`     |
+| `NAME_SERVERS`      | No       | Comma delimited name servers                                                        | `NAME_SERVERS=8.8.8.8,8.8.4.4`   |
+| `PUID`              | No       | UID applied to config files and downloads                                           | `PUID=99`                        |
+| `PGID`              | No       | GID applied to config files and downloads                                           | `PGID=100`                       |
+| `UMASK`             | No       | GID applied to config files and downloads                                           | `UMASK=002`                      |
+| `WEBUI_PORT_ENV`    | No       | Applies WebUI port to deluge config at boot (Must change exposed ports to match)    | `WEBUI_PORT_ENV=8112`            |
+| `INCOMING_PORT_ENV` | No       | Applies Incoming port to deluge config at boot (Must change exposed ports to match) | `INCOMING_PORT_ENV=8999`         |
 
 ## Volumes
 
 | Volume        | Required | Function                                 | Example                                         |
 | ------------- | -------- | ---------------------------------------- | ----------------------------------------------- |
-| `qBittorrent` | Yes      | qBittorrent and OpenVPN config files     | `/your/config/path/:/config/qBittorrent`        |
+| `deluge`      | Yes      | deluge and OpenVPN config files          | `/your/config/path/:/config/deluge`             |
 | `client.ovpn` | No       | OpenVPN config file if `VPN_ENABLED=yes` | `/your/openvpn/client.conf:/config/client.ovpn` |
 | `downloads`   | No       | Default download path for torrents       | `/your/downloads/path/:/downloads`              |
 
 ## Ports
 
-| Port   | Proto | Required | Function                   | Example         |
-| ------ | ----- | -------- | -------------------------- | --------------- |
-| `8080` | TCP   | Yes      | qBittorrent WebUI          | `8080:8080`     |
-| `8999` | TCP   | Yes      | qBittorrent listening port | `8999:8999`     |
-| `8999` | UDP   | Yes      | qBittorrent listening port | `8999:8999/udp` |
+| Port    | Proto | Required | Function              | Example           |
+| ------- | ----- | -------- | --------------------- | ----------------- |
+| `8112`  | TCP   | Yes      | deluge WebUI          | `8112:8112`       |
+| `58946` | TCP   | Yes      | deluge listening port | `58946:58946`     |
+| `58946` | UDP   | Yes      | deluge listening port | `58946:58946/udp` |
 
 # Access the WebUI
 
@@ -80,14 +77,6 @@ Access http://IPADDRESS:PORT from a browser on the same network.
 | ---------------- | ------------- |
 | `WebUI Username` | admin         |
 | `WebUI Password` | adminadmin    |
-
-## Origin header & Target origin mismatch
-
-WebUI\CSRFProtection must be set to false in qBittorrent.conf if using an unconfigured reverse proxy or forward request within a browser. This is the default setting unless changed. This file can be found in the dockers config directory in /qBittorrent/config
-
-## WebUI: Invalid Host header, port mismatch
-
-qBittorrent throws a [WebUI: Invalid Host header, port mismatch](https://github.com/qbittorrent/qBittorrent/issues/7641#issuecomment-339370794) error if you use port forwarding with bridge networking due to security features to prevent DNS rebinding attacks. If you need to run qBittorrent on different ports, instead edit the WEBUI_PORT_ENV and/or INCOMING_PORT_ENV variables AND the exposed ports to change the native ports qBittorrent uses.
 
 # How to use OpenVPN
 
@@ -127,15 +116,15 @@ To build this container, clone the repository and cd into it.
 ## Build it:
 
 ```
-$ cd /repo/location/qbittorrent
-$ docker build -t qbittorrent .
+$ cd /repo/location/deluge
+$ docker build -t deluge .
 ```
 
 ## Run it:
 
 ```
 $ docker run --privileged  -d \
-              -v /your/qBittorrent/path/:/config/qBittorrent \
+              -v /your/deluge/path/:/config/deluge \
               -v /your/openvpn/client.conf:/config/client.ovpn \
               -v /your/downloads/path/:/downloads \
               -e "VPN_ENABLED=yes" \
@@ -144,7 +133,7 @@ $ docker run --privileged  -d \
               -p 8080:8080 \
               -p 8999:8999 \
               -p 8999:8999/udp \
-              qbittorrent
+              deluge
 ```
 
 This will start a container as described in the "Run container from Docker registry" section.
