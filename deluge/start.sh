@@ -13,7 +13,7 @@ if [ $? -eq 0 ]; then
    echo "Group $PGID exists"
 else
    echo "Adding $PGID group"
-	 groupadd -g $PGID qbittorent
+	 groupadd -g $PGID deluge
 fi
 
 ## Check for missing userid
@@ -22,7 +22,7 @@ if [ $? -eq 0 ]; then
    echo "User $PUID exists in /etc/passwd"
 else
    echo "Adding $PUID user"
-	 useradd -c "qbittorent user" -g $PGID -u $PUID qbittorent
+	 useradd -c "deluge user" -g $PGID -u $PUID deluge
 fi
 
 # set umask
