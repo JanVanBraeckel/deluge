@@ -71,15 +71,18 @@ echo "[info] Starting deluge web..." | ts '%Y-%m-%d %H:%M:%.S'
 /bin/bash /etc/deluge/deluge.init startweb &
 chmod -R 755 /config/deluge
 
-sleep 1
+sleep 5s
 qbpid=$(pgrep -o -x deluged)
 qbwebpid=$(pgrep -o -x deluge-web)
 echo "[info] deluge PID: $qbpid" | ts '%Y-%m-%d %H:%M:%.S'
 echo "[info] deluge web PID: $qbwebpid" | ts '%Y-%m-%d %H:%M:%.S'
 
 if [ -e /proc/$qbpid ]; then
-	if [[ -e /config/deluge/data/logs/deluge.log ]]; then
-		chmod 775 /config/deluge/data/logs/deluge.log
+	if [[ -e /config/deluge/logs/deluge-daemon.log ]]; then
+		chmod 775 /config/deluge/logs/deluge-daemon.log
+	fi
+	if [[ -e /config/deluge/logs/deluge-web-daemon.log ]]; then
+		chmod 775 /config/deluge/logs/deluge-web-daemon.log
 	fi
 	sleep infinity
 else
